@@ -19,7 +19,8 @@ async function run (){
     try{
         client.connect();
         const database =client.db('airtickets');
-        const ticketsCollection = database.collection('tickets')
+        const ticketsCollection = database.collection('tickets');
+        const orderCollection = database.collection('orders')
         
         // get api 
         app.get('/tickets', async (req,res)=>{
@@ -35,7 +36,22 @@ async function run (){
             const result = await ticketsCollection.insertOne(ticket)
             console.log(result)
             res.json(result)
+        });
+    //     // order api post 
+        app.post('/orders', async (req,res)=>{
+            const order = req.body;
+            console.log('post hit',order)
+            const result = await orderCollection.insertOne(order)
+            res.json(result)
         })
+
+        // order get api 
+        app.get('/orders', async (req,res)=>{
+            const cursor = orderCollection.find({});
+            const orders = await cursor.toArray();
+            res.send(orders)
+      })
+
 
 
     }
